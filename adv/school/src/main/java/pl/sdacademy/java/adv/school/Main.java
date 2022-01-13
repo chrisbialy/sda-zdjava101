@@ -28,6 +28,7 @@ public class Main {
         final StudentsParser studentsParser = new JsonStudentsParser();
         final List<Student> students;
         try (InputStream studentsDataStream = Main.class.getResourceAsStream("/students.json")) {
+        //try (InputStream studentsDataStream = Main.class.getResourceAsStream("/students.csv")) {
             students = studentsParser.parseData(studentsDataStream);
         }
 
