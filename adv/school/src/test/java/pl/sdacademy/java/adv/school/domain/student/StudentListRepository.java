@@ -8,11 +8,13 @@ public class StudentListRepository implements StudentRepository {
     private final List<Student> students;
 
     public StudentListRepository(List<Student> students) {
+
         this.students = students;
     }
 
     @Override
     public List<Student> findAllStudents() {
+
         return students;
     }
 }
