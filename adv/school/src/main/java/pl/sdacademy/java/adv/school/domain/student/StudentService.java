@@ -50,14 +50,14 @@ public class StudentService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-  public Map<String, List<Student>> getStudentsGroupedByCityAndSortedByName() {
+    public Map<String, List<Student>> getStudentsGroupedByCityAndSortedByName() {
 
-    Map<String, List<Student>> groupedStudents =
-        studentRepository.findAllStudents().stream()
-            .sorted(Comparator.comparing(Student::getLastName).thenComparing(Student::getFirstName))
-            .collect(Collectors.groupingBy(Student::getCity));
-    return groupedStudents;
-  }
+        Map<String, List<Student>> groupedStudents =
+                studentRepository.findAllStudents().stream()
+                        .sorted(Comparator.comparing(Student::getLastName).thenComparing(Student::getFirstName))
+                        .collect(Collectors.groupingBy(Student::getCity));
+        return groupedStudents;
+    }
 
     public Map<String, Student> getStudentsMappedByIdentifier() {
         return studentRepository.findAllStudents().stream()
@@ -103,10 +103,18 @@ public class StudentService {
     }
 
     public Map<String, Integer> studentsToSkippedYears() {
-        throw new UnsupportedOperationException("Zadanie domowe");
+        int currentYear = LocalDate.now(clock).getYear();
+        return studentRepository.findAllStudents().stream()
+                .filter(student -> student.getStartYear() + student.getSchoolYear() - currentYear > 0)
+                .collect(Collectors
+                        .toMap(Student::getId, student -> student.getStartYear() + student.getSchoolYear() - currentYear));
     }
 
     public Map<String, Integer> studentsToRepeatedYears() {
-        throw new UnsupportedOperationException("Zadanie domowe");
+        int currentYear = LocalDate.now(clock).getYear();
+        return studentRepository.findAllStudents().stream()
+                .filter(student -> currentYear - student.getStartYear() > student.getSchoolYear())
+                .collect(Collectors
+                        .toMap(Student::getId, student -> currentYear - student.getStartYear() - student.getSchoolYear()));
     }
 }

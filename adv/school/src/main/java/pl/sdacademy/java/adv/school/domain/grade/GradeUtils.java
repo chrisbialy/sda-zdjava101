@@ -24,11 +24,25 @@ public class GradeUtils {
         /*
         Zadanie to może zostać zrealizowane zarówno przy użyciu tradycyjnej pętli, jak i Stream API (zalecane!)
         Wagę oceny jako wartość BigDecimal można pobrać z grade.getGradeWeight().getWeight()
-
         Uwaga, do porównywania wartości BigDecimal należy bezwzględnie używać metody compareTo()! Przykład:
         (BigDecimal.ONE.equals(new BigDecimal("1.0"))) ---> false
         (BigDecimal.ONE.compareTo(new BigDecimal("1.0")) == 0) ---> true
         */
-        throw new UnsupportedOperationException("Zadanie domowe");
+
+        BigDecimal numerator = grades.stream()
+                .map(t -> t.getValue().multiply(t.getGradeWeight().getWeight()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal denominator = grades.stream().
+                map(t -> t.getGradeWeight().getWeight())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (numerator.compareTo(BigDecimal.ONE) < 0 || denominator.compareTo(BigDecimal.ZERO) <= 0) {
+            return Optional.empty();
+        }
+
+        BigDecimal result = numerator.divide(denominator, 2, RoundingMode.HALF_UP);
+
+        return Optional.of(result);
     }
 }
